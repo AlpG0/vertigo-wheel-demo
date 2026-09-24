@@ -49,7 +49,7 @@ namespace VertigoWheel.Core
 
         private void Start() // Awake'ten sonra calisir
         {
-            hudView.SetZone(runState.CurrentZone); // baslangic zone'unu ekrana yaz
+            hudView.SetSpinTitle(GetSpinTitle(GetCurrentZoneType())); // baslangicta hangi spin basligi gosterilecek
             hudView.SetTotal(runState.TotalValue); // baslangic toplamini ekrana yaz
             wheelView.ShowConfig(GetCurrentWheelConfig()); // basta hangi wheel gosterilecek onu belirle
             wheelThemeView.ApplyZoneType(GetCurrentZoneType()); // basta hangi tema (bronze/silver/golden) gosterilecek onu belirle
@@ -59,6 +59,21 @@ namespace VertigoWheel.Core
         private ZoneType GetCurrentZoneType() // su anki zone'un turunu dondurur, tek yerden hesapliyoruz
         {
             return zoneManager.GetZoneType(runState.CurrentZone); // zoneManager'a soruyoruz, zoneManager zone numarasina gore safe/super/normal donduruyor
+        }
+
+        private string GetSpinTitle(ZoneType zoneType) // zone turune gore ust basligin metnini dondurur, referans gorseldeki "GOLDEN SPIN" gibi
+        {
+            if (zoneType == ZoneType.Super) // super zone ise
+            {
+                return "GOLDEN SPIN";
+            }
+
+            if (zoneType == ZoneType.Safe) // safe zone ise
+            {
+                return "SILVER SPIN";
+            }
+
+            return "BRONZE SPIN"; // ikisi de degilse normal
         }
 
         private WheelConfig GetCurrentWheelConfig() // su anki zone'a gore dogru config'i secer
@@ -108,7 +123,7 @@ namespace VertigoWheel.Core
                 int lostAmount = runState.TotalValue; // sifirlanmadan once kaybedilen miktari not al
                 runState.ResetRun(); // her sey sifirlanir
 
-                hudView.SetZone(runState.CurrentZone); // ekrani guncelle
+                hudView.SetSpinTitle(GetSpinTitle(GetCurrentZoneType())); // yeni zone'un spin basligini goster
                 hudView.SetTotal(runState.TotalValue); // ekrani guncelle
                 wheelView.ShowConfig(GetCurrentWheelConfig()); // yeni run'un wheel'ini goster
                 wheelThemeView.ApplyZoneType(GetCurrentZoneType()); // yeni zone'a gore temayi guncelle
@@ -120,7 +135,7 @@ namespace VertigoWheel.Core
             runState.AddReward(result.Amount); // odulu topluyoruz
             runState.AdvanceZone(); // bir zone ilerliyoruz
 
-            hudView.SetZone(runState.CurrentZone); // ekrani guncelle
+            hudView.SetSpinTitle(GetSpinTitle(GetCurrentZoneType())); // yeni zone'un spin basligini goster
             hudView.SetTotal(runState.TotalValue); // ekrani guncelle
             wheelView.ShowConfig(GetCurrentWheelConfig()); // zone degismis olabilir, yeni zone'un wheel'ini goster
             wheelThemeView.ApplyZoneType(GetCurrentZoneType()); // yeni zone'a gore temayi guncelle
@@ -139,7 +154,7 @@ namespace VertigoWheel.Core
         {
             runState.EndRun(); // total'i koruyarak zone'u basa al
 
-            hudView.SetZone(runState.CurrentZone); // ekrani guncelle
+            hudView.SetSpinTitle(GetSpinTitle(GetCurrentZoneType())); // yeni zone'un spin basligini goster
             hudView.SetTotal(runState.TotalValue); // ekrani guncelle
             wheelView.ShowConfig(GetCurrentWheelConfig()); // yeni run'un wheel'ini goster
             wheelThemeView.ApplyZoneType(GetCurrentZoneType()); // yeni zone'a gore temayi guncelle
