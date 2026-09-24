@@ -11,11 +11,11 @@ namespace VertigoWheel.UI
     {
         [SerializeField] private TMP_Text zoneValueText; // ZONE yazisinin text component'i, text mesh pro temel text tipi, bu yüzden TMP_Text. Inspector'da görünmesi için SerializeField ile işaretledik.
         [SerializeField] private TMP_Text totalValueText; // TOTAL yazisinin text component'i
+        [SerializeField] private PunchScaleAnimator totalPunchAnimator; // total daire buyuyup kuculerek "pop" efekti versin diye
 
         private void OnValidate() // referanslari elle surüklemeyelim diye otomatik bul
         {
             // sahnede birden fazla "Canvas" isimli obje oldugu icin transform.Find("Canvas/...") yanlis objeyi buluyordu (hata veriyordu).
-            // bunun yerine altimdaki TUM TMP_Text'leri tarayip isme gore ESLESTIRIYORUZ, boylece hangi Canvas'in altinda olduklari onemli degil.
             TMP_Text[] allTexts = GetComponentsInChildren<TMP_Text>(true); // true: pasif objeleri de ara (reward popup gibi)
 
             foreach (TMP_Text text in allTexts) // her text icin tek tek bak
@@ -29,6 +29,8 @@ namespace VertigoWheel.UI
                     totalValueText = text; // bu bizim total text'imiz
                 }
             }
+
+            totalPunchAnimator = GetComponentInChildren<PunchScaleAnimator>(true); // altimda tek tane var, direkt bulup atiyoruz
         }
 
         public void SetSpinTitle(string title) // ust basligi gunceller, artik zone numarasi degil "BRONZE SPIN" gibi bir baslik gosteriyoruz
@@ -39,6 +41,7 @@ namespace VertigoWheel.UI
         public void SetTotal(int total) // toplam odulu gunceller
         {
             totalValueText.text = total.ToString(); // artik "TOTAL: " on eki yok, referans gorseldeki gibi sade sayi (wheel'in ortasinda gosterilecek)
+            totalPunchAnimator.Play(); // sayi degisince daire kisa bir pulse yapsin, oduldu belli olsun
         }
     }
 }
