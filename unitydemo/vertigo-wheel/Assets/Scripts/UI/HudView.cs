@@ -33,6 +33,11 @@ namespace VertigoWheel.UI
             totalPunchAnimator = GetComponentInChildren<PunchScaleAnimator>(true); // altimda tek tane var, direkt bulup atiyoruz
         }
 
+        public Vector3 GetTotalWorldPosition() // odul gidis animasyonu icin ucusun bitecegi konum lazim
+        {
+            return totalPunchAnimator.transform.position;
+        }
+
         public void SetSpinTitle(string title) // ust basligi gunceller, artik zone numarasi degil "BRONZE SPIN" gibi bir baslik gosteriyoruz
         {
             zoneValueText.text = title; // metni disaridan gelen baslikla degistiriyoruz, burada "ZONE " gibi bir on ek eklemiyoruz artik

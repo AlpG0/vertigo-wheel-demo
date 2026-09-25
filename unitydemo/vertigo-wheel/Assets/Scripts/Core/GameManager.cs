@@ -17,6 +17,7 @@ namespace VertigoWheel.Core
         [SerializeField] private ActionButtonsView actionButtonsView; // spin/leave butonlarini dinleyen sinif
         [SerializeField] private HudView hudView; // zone/total yazilarini gunceleyen sinif
         [SerializeField] private RewardPopupView rewardPopupView; // bomba patlayinca gosterilen popup
+        [SerializeField] private RewardTravelAnimator rewardTravelAnimator; // kazanilan odul ikonunu wheel'den TOTAL'e ucuran sinif
         [SerializeField] private WheelConfig wheelConfigNormal; // normal zone icin kullanacagimiz config, bunu elle surukleyecegiz
         [SerializeField] private WheelConfig wheelConfigSafe; // safe zone icin config, bombasiz
         [SerializeField] private WheelConfig wheelConfigSuper; // super zone icin config, bombasiz
@@ -25,6 +26,7 @@ namespace VertigoWheel.Core
         private PlayerRunState runState; // oyuncunun anlik durumu (zone, toplam odul)
         private ZoneManager zoneManager; // su anki zone'un turunu hesaplayan sinif
         private WheelSegmentData pendingResult; // spin animasyonu bitince uygulanacak sonucu gecici olarak burada tutuyoruz
+        private int pendingWinningIndex; // odul gidis animasyonu icin kazanan segmentin index'ini de sakliyoruz
 
         private void OnValidate() // sahnedeki diger 3 script'i otomatik bul
         {
@@ -34,6 +36,7 @@ namespace VertigoWheel.Core
             actionButtonsView = GetComponentInChildren<ActionButtonsView>(); // altimdaki ActionButtonsView'i bul
             hudView = GetComponentInChildren<HudView>(); // altimdaki HudView'i bul
             rewardPopupView = GetComponentInChildren<RewardPopupView>(true); // true: popup pasif basladigi icin inactive de dahil ara
+            rewardTravelAnimator = GetComponentInChildren<RewardTravelAnimator>(true); // true: ucus objesi basta pasif basliyor
         }
 
         private void Awake() // sahne yuklenince ilk calisan metot
@@ -107,6 +110,7 @@ namespace VertigoWheel.Core
             int winningIndex = currentConfig.Segments.IndexOf(result); // sonucun listedeki index'i, animasyon icin lazim
 
             pendingResult = result; // animasyon bitince kullanmak icin sonucu sakla
+            pendingWinningIndex = winningIndex; // odul gidis animasyonu bu index'ten baslayacak, onu da sakla
 
             actionButtonsView.SetSpinInteractable(false); // animasyon bitene kadar tekrar tiklanamasin
             actionButtonsView.SetLeaveInteractable(false); // animasyon bitene kadar leave da tiklanamasin
@@ -135,8 +139,15 @@ namespace VertigoWheel.Core
             runState.AddReward(result.Amount); // odulu topluyoruz
             runState.AdvanceZone(); // bir zone ilerliyoruz
 
+            Vector3 fromPosition = wheelView.GetSegmentWorldPosition(pendingWinningIndex); // ucusun baslayacagi yer, kazanan segmentin ikonu
+            Vector3 toPosition = hudView.GetTotalWorldPosition(); // ucusun bitecegi yer, TOTAL dairesi
+            rewardTravelAnimator.Play(result.Icon, fromPosition, toPosition, HandleRewardTravelComplete); // ikon ucsun, bitince HandleRewardTravelComplete cagrilsin (parametresiz, o yuzden metot adini direkt verebiliyoruz)
+        }
+
+        private void HandleRewardTravelComplete() // odul ikonu TOTAL'e ulasinca calisir
+        {
             hudView.SetSpinTitle(GetSpinTitle(GetCurrentZoneType())); // yeni zone'un spin basligini goster
-            hudView.SetTotal(runState.TotalValue); // ekrani guncelle
+            hudView.SetTotal(runState.TotalValue); // ekrani guncelle, daire de burada pulse atar
             wheelView.ShowConfig(GetCurrentWheelConfig()); // zone degismis olabilir, yeni zone'un wheel'ini goster
             wheelThemeView.ApplyZoneType(GetCurrentZoneType()); // yeni zone'a gore temayi guncelle
             actionButtonsView.SetSpinInteractable(true); // spin tekrar tiklanabilir olsun

@@ -41,6 +41,11 @@ namespace VertigoWheel.Wheel
             }
         }
 
+        public Vector3 GetSegmentWorldPosition(int index) // odul gidis animasyonu icin kazanan segmentin ekrandaki konumu lazim
+        {
+            return segmentImages[index].transform.position;
+        }
+
         public void ShowConfig(WheelConfig config) // disaridan hangi config gosterilecekse bunu cagiracagiz
        {
             wheelConfig = config; // gosterilecek config'i guncelle
