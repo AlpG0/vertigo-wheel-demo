@@ -2630,12 +2630,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VertigoWheel.Wheel.WheelThemeView
   wheelBaseImage: {fileID: 570061663}
   indicatorImage: {fileID: 297961526}
-  bronzeBaseSprite: {fileID: 21300000, guid: fab2fd31ff3754a988b794405624c7bb, type: 3}
-  bronzeIndicatorSprite: {fileID: 21300000, guid: 060517748054d485cb316349113d7404, type: 3}
-  silverBaseSprite: {fileID: 21300000, guid: 8fab456507c5a431ab5b16bf97f029df, type: 3}
-  silverIndicatorSprite: {fileID: 21300000, guid: e8521dd99629c4eddb0a2a1b11429019, type: 3}
-  goldenBaseSprite: {fileID: 21300000, guid: 8ae55e18cd66547c3b55ce382bc805e0, type: 3}
-  goldenIndicatorSprite: {fileID: 21300000, guid: 0df5a5d31d7134768a22cc9b87c8bddc, type: 3}
 --- !u!1 &808643936
 GameObject:
   m_ObjectHideFlags: 0
@@ -4363,9 +4357,22 @@ MonoBehaviour:
   hudView: {fileID: 1717672747}
   rewardPopupView: {fileID: 1099714129}
   rewardTravelAnimator: {fileID: 159168417}
-  wheelConfigNormal: {fileID: 11400000, guid: 5056fce89757e418480d3f3300fdaf58, type: 2}
-  wheelConfigSafe: {fileID: 11400000, guid: 71e2ee12a36df4ddfa228d98028fa54f, type: 2}
-  wheelConfigSuper: {fileID: 11400000, guid: 57d295040900a459da6cea6afb5165b5, type: 2}
+  zonePresets:
+  - zoneType: 0
+    spinTitle: BRONZE SPIN
+    wheelConfig: {fileID: 11400000, guid: 5056fce89757e418480d3f3300fdaf58, type: 2}
+    wheelBaseSprite: {fileID: 21300000, guid: fab2fd31ff3754a988b794405624c7bb, type: 3}
+    indicatorSprite: {fileID: 21300000, guid: 060517748054d485cb316349113d7404, type: 3}
+  - zoneType: 1
+    spinTitle: SILVER SPIN
+    wheelConfig: {fileID: 11400000, guid: 71e2ee12a36df4ddfa228d98028fa54f, type: 2}
+    wheelBaseSprite: {fileID: 21300000, guid: 8fab456507c5a431ab5b16bf97f029df, type: 3}
+    indicatorSprite: {fileID: 21300000, guid: e8521dd99629c4eddb0a2a1b11429019, type: 3}
+  - zoneType: 2
+    spinTitle: GOLDEN SPIN
+    wheelConfig: {fileID: 11400000, guid: 57d295040900a459da6cea6afb5165b5, type: 2}
+    wheelBaseSprite: {fileID: 21300000, guid: 8ae55e18cd66547c3b55ce382bc805e0, type: 3}
+    indicatorSprite: {fileID: 21300000, guid: 0df5a5d31d7134768a22cc9b87c8bddc, type: 3}
 --- !u!114 &1717672747
 MonoBehaviour:
   m_ObjectHideFlags: 0
