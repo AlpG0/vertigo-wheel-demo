@@ -12,7 +12,7 @@ namespace VertigoWheel.Core
     /// </summary>
     public class GameManager : MonoBehaviour // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour
     {
-        private const string BombLostMessageFormat = "BOMBA! {0} odulu kaybettin."; // bomba mesaji artik tek yerde, string.Format ile dolduruluyor
+        private const string BombRiskMessageFormat = "Don't lose your {0} rewards!"; // popup acikken oduller henuz kaybedilmedi, GIVE UP'a basilirsa kaybedilecek
 
         private enum GameState // oyunun su anki akis durumu, artik dagilmis bool bayraklar yerine tek yerden yonetiliyor
         {
@@ -72,7 +72,8 @@ namespace VertigoWheel.Core
 
             actionButtonsView.OnSpinClicked += HandleSpinClicked; // spin event'ine kendi metodumuzu bagliyoruz
             actionButtonsView.OnLeaveClicked += HandleLeaveClicked; // leave event'ine kendi metodumuzu bagliyoruz
-            rewardPopupView.OnCloseClicked += HandleRewardPopupClosed; // popup kapatilinca kendi metodumuzu bagliyoruz
+            rewardPopupView.OnGiveUpClicked += HandleBombGiveUp; // GIVE UP'a basilinca kendi metodumuzu bagliyoruz
+            rewardPopupView.OnReviveClicked += HandleBombRevive; // REVIVE'a basilinca kendi metodumuzu bagliyoruz
         }
 
         protected virtual IWheelResultPicker CreateResultPicker() // hangi IWheelResultPicker kullanilacagini belirler
@@ -170,13 +171,23 @@ namespace VertigoWheel.Core
 
         private void HandleBombResult() // bombaya carpinca yapilacak her seyi burada topluyoruz
         {
-            int lostAmount = runState.TotalValue; // sifirlanmadan once kaybedilen miktari not al
+            SetState(GameState.PopupOpen); // popup acik oldugu surece butonlar kapali kalsin
+            rewardPopupView.Show(string.Format(BombRiskMessageFormat, runState.TotalValue)); // henuz hicbir sey sifirlanmadi, oyuncu GIVE UP'a basana kadar oduller duruyor
+        }
+
+        private void HandleBombGiveUp() // GIVE UP'a basilinca calisir, oduller gercekten kaybedilir
+        {
             runState.ResetRun(); // her sey sifirlanir
 
-            RefreshViewsForCurrentZone(); // yeni run'un ekranini kur
-            SetState(GameState.PopupOpen); // popup acik oldugu surece butonlar kapali kalsin
+            rewardPopupView.Hide(); // popup'i gizle
+            RefreshViewsForCurrentZone(); // sifirlanmis run'un ekranini kur
+            SetState(GameState.Idle); // spin tekrar tiklanabilir olsun
+        }
 
-            rewardPopupView.Show(string.Format(BombLostMessageFormat, lostAmount)); // kaybi popup'ta goster
+        private void HandleBombRevive() // REVIVE (gold veya reklam) basilinca calisir, hicbir sey kaybedilmez
+        {
+            rewardPopupView.Hide(); // popup'i gizle
+            SetState(GameState.Idle); // spin tekrar tiklanabilir olsun, zone ve total oldugu gibi kaliyor
         }
 
         private void HandleRewardResult(WheelSegmentData result) // odul kazaninca yapilacak her seyi burada topluyoruz
@@ -192,12 +203,6 @@ namespace VertigoWheel.Core
         private void HandleRewardTravelComplete() // odul ikonu TOTAL'e ulasinca calisir
         {
             RefreshViewsForCurrentZone(); // yeni zone'un ekranini kur (SetTotal burada da cagrilir, daire pulse atar)
-            SetState(GameState.Idle); // spin tekrar tiklanabilir olsun
-        }
-
-        private void HandleRewardPopupClosed() // popup'taki TAMAM'a basilinca calisir
-        {
-            rewardPopupView.Hide(); // popup'i gizle
             SetState(GameState.Idle); // spin tekrar tiklanabilir olsun
         }
 

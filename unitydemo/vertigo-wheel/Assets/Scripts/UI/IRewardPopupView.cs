@@ -7,7 +7,8 @@ namespace VertigoWheel.UI
     /// </summary>
     public interface IRewardPopupView
     {
-        event Action OnCloseClicked; // kapatma butonuna basilinca tetiklenir
+        event Action OnGiveUpClicked; // GIVE UP butonuna basilinca tetiklenir, oduller gercekten kaybedilir
+        event Action OnReviveClicked; // REVIVE butonlarindan (gold veya reklam) birine basilinca tetiklenir, hicbir sey kaybedilmez
 
         void Show(string message); // popup'i mesajla birlikte gosterir
         void Hide(); // popup'i gizler
