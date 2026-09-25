@@ -3,7 +3,7 @@ namespace VertigoWheel.Core
     /// <summary>
     /// Oyuncunun mevcut run durumunu temsil eder.
     /// </summary>
-    public class PlayerRunState // MonoBehaviour degil, sahneye bagli olmayan duz bir veri sinifi
+    public class PlayerRunState : IPlayerRunState // MonoBehaviour degil, sahneye bagli olmayan duz bir veri sinifi; IPlayerRunState'i implement ediyor
     {
         private int currentZone = 1; // oyuncu hangi zone'da, 1'den basliyor
         private int totalValue; // su ana kadar toplanan odul miktari

@@ -8,7 +8,7 @@ namespace VertigoWheel.Wheel
     /// <summary>
     /// Wheel objesinin donme animasyonunu yapan sinif.
     /// </summary>
-    public class WheelSpinAnimator : MonoBehaviour // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour
+    public class WheelSpinAnimator : MonoBehaviour, IWheelSpinAnimator // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour; IWheelSpinAnimator'i implement ediyor
     {
         [SerializeField] private float spinDuration = 2f; // animasyon kac saniye surecek
         [SerializeField] private int extraFullSpins = 5; // gorsel etki icin kac tam tur atsin

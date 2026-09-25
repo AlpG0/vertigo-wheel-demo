@@ -8,7 +8,7 @@ namespace VertigoWheel.UI
     /// <summary>
     /// Bomba patlayinca gosterilen odul popup'ini yoneten sinif.
     /// </summary>
-    public class RewardPopupView : MonoBehaviour
+    public class RewardPopupView : MonoBehaviour, IRewardPopupView // IRewardPopupView'i implement ediyor
     {
         [SerializeField] private TMP_Text messageText; // popup icindeki mesaj yazisi
         [SerializeField] private Button closeButton; // kapatma butonu

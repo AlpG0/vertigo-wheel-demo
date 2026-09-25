@@ -7,7 +7,7 @@ namespace VertigoWheel.Wheel
     /// Wheel'in govde ve indicator gorselini kendisine verilen sprite'larla degistiren sinif.
     /// Hangi zone'da hangi sprite kullanilacagini bilmez, bu karar artik GameManager'daki ZonePreset'te.
     /// </summary>
-    public class WheelThemeView : MonoBehaviour // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour
+    public class WheelThemeView : MonoBehaviour, IWheelThemeView // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour; IWheelThemeView'i implement ediyor
     {
         [SerializeField] private Image wheelBaseImage; // wheel'in govde gorseli
         [SerializeField] private Image indicatorImage; // wheel'in indicator gorseli

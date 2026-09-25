@@ -5,7 +5,7 @@ namespace VertigoWheel.Zone
     /// <summary>
     /// Verilen zone numarasinin turunu (Normal/Safe/Super) hesaplayan sinif.
     /// </summary>
-    public class ZoneManager // duz sinif, MonoBehaviour degil, sahneyle ilgisi yok
+    public class ZoneManager : IZoneManager // duz sinif, MonoBehaviour degil, sahneyle ilgisi yok; IZoneManager'i implement ediyor
     {
         private const int SafeZoneInterval = 5; // her kacinci zone'da bir safe zone gelecek
         private const int SuperZoneInterval = 30; // her kacinci zone'da bir super zone gelecek

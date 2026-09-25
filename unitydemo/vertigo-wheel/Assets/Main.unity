@@ -4350,13 +4350,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eebf6f7020c1419fa3996b0c8eb7b96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VertigoWheel.Core.GameManager
-  wheelView: {fileID: 527226507}
-  wheelSpinAnimator: {fileID: 527226508}
-  wheelThemeView: {fileID: 802401473}
-  actionButtonsView: {fileID: 2004118580}
-  hudView: {fileID: 1717672747}
-  rewardPopupView: {fileID: 1099714129}
-  rewardTravelAnimator: {fileID: 159168417}
+  wheelViewRef: {fileID: 527226507}
+  wheelSpinAnimatorRef: {fileID: 527226508}
+  wheelThemeViewRef: {fileID: 802401473}
+  actionButtonsViewRef: {fileID: 2004118580}
+  hudViewRef: {fileID: 1717672747}
+  rewardPopupViewRef: {fileID: 1099714129}
+  rewardTravelAnimatorRef: {fileID: 159168417}
   zonePresets:
   - zoneType: 0
     spinTitle: BRONZE SPIN

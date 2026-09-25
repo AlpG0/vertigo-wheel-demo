@@ -9,8 +9,10 @@ namespace VertigoWheel.Wheel
     /// <summary>
     /// Wheel'deki segment ikonlarini, verilen config'e gore ekranda gosteren sinif.
     /// </summary>
-    public class WheelView : MonoBehaviour // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour
+    public class WheelView : MonoBehaviour, IWheelView // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour; IWheelView'i implement ediyor
     {
+        private const string WheelBaseObjectName = "ui_image_wheel_base"; // segment olmayan tek Image bu, isim literal olarak dagilmasin diye sabit yaptik
+
         [SerializeField] private Image[] segmentImages; // 8 segmentin Image component'leri, array olarak tanımladık. Inspector'da görünmesi için SerializeField ile işaretledik.
         [SerializeField] private TMP_Text[] segmentValueTexts; // her segmentin altindaki "xN" yazilari
         [SerializeField] private TMP_Text maxRewardText; // wheel'in altindaki "Up To xN Rewards" yazisi
@@ -23,7 +25,7 @@ namespace VertigoWheel.Wheel
 
             foreach (Image image in allImages) // her bulunan image icin tek tek bak, foreach asagidaki gibi calisir: once image = allImages[0], sonra image = allImages[1] ... sonuncuya kadar
             { // index ile say yerine listedeki her elemani tek tek aliyor, allImages icindeki her image'i tek tek aliyor ve asagidaki kodu calistiriyor
-                if (image.gameObject.name != "ui_image_wheel_base") // wheel_base'in kendisi degilse
+                if (image.gameObject.name != WheelBaseObjectName) // wheel_base'in kendisi degilse
                 {
                     filtered.Add(image); // listeye ekle
                 }

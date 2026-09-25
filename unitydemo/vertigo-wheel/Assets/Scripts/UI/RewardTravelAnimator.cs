@@ -8,7 +8,7 @@ namespace VertigoWheel.UI
     /// <summary>
     /// Kazanilan odulun ikonunu wheel'deki segmentten TOTAL dairesine dogru ucurarak tasiyan sinif.
     /// </summary>
-    public class RewardTravelAnimator : MonoBehaviour // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour
+    public class RewardTravelAnimator : MonoBehaviour, IRewardTravelAnimator // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour; IRewardTravelAnimator'i implement ediyor
     {
         [SerializeField] private Image travelIcon; // ucacak gecici ikon, benim uzerimdeki Image component
         [SerializeField] private float duration = 0.5f; // ucus kac saniye surecek

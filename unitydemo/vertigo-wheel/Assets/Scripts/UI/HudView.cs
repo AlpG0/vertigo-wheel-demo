@@ -7,7 +7,7 @@ namespace VertigoWheel.UI
     /// <summary>
     /// Ekrandaki zone ve toplam odul yazilarini gunceleyen sinif.
     /// </summary>
-    public class HudView : MonoBehaviour // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour
+    public class HudView : MonoBehaviour, IHudView // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour; IHudView'i implement ediyor
     {
         [SerializeField] private TMP_Text zoneValueText; // ZONE yazisinin text component'i, text mesh pro temel text tipi, bu yüzden TMP_Text. Inspector'da görünmesi için SerializeField ile işaretledik.
         [SerializeField] private TMP_Text totalValueText; // TOTAL yazisinin text component'i

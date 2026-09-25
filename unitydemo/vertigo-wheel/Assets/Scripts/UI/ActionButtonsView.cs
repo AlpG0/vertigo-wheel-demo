@@ -7,7 +7,7 @@ namespace VertigoWheel.UI // UI ile ilgili sınıflar burada olacak.
     /// <summary>
     /// Spin ve Leave butonlarinin tiklanmasini dinleyip disariya event olarak bildiren sinif.
     /// </summary>
-    public class ActionButtonsView : MonoBehaviour // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour
+    public class ActionButtonsView : MonoBehaviour, IActionButtonsView // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour; IActionButtonsView'i implement ediyor
     {
         [SerializeField] private Button spinButton; // spin butonunun Button component'i
         [SerializeField] private Button leaveButton; // leave butonunun Button component'i
