@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 965e5f841b034735869ed314d82af3d0, type: 3}
+  m_Name: Zone_Gold
+  m_EditorClassIdentifier: Assembly-CSharp::VertigoWheel.Zone.ZoneDefinition
+  title: "ALTIN \u00c7EV\u0130RME"
+  subtitle: "EN \u0130Y\u0130 \u00d6D\u00dcLLER - BOMBA R\u0130SK\u0130 YOK"
+  interval: 30
+  canLeave: 1
+  wheelConfig: {fileID: 11400000, guid: 57d295040900a459da6cea6afb5165b5, type: 2}
+  wheelBaseSprite: {fileID: 21300000, guid: 8ae55e18cd66547c3b55ce382bc805e0, type: 3}
+  indicatorSprite: {fileID: 21300000, guid: 0df5a5d31d7134768a22cc9b87c8bddc, type: 3}

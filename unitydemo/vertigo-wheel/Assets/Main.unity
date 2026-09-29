@@ -5480,30 +5480,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4eebf6f7020c1419fa3996b0c8eb7b96, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VertigoWheel.Core.GameManager
-  wheelViewRef: {fileID: 527226507}
-  wheelSpinAnimatorRef: {fileID: 527226508}
-  wheelThemeViewRef: {fileID: 802401473}
-  actionButtonsViewRef: {fileID: 2004118580}
-  hudViewRef: {fileID: 1717672747}
-  rewardPopupViewRef: {fileID: 1099714129}
-  rewardTravelAnimatorRef: {fileID: 159168417}
-  zonePresets:
-  - zoneType: 0
-    spinTitle: BRONZE SPIN
-    wheelConfig: {fileID: 11400000, guid: 5056fce89757e418480d3f3300fdaf58, type: 2}
-    wheelBaseSprite: {fileID: 21300000, guid: fab2fd31ff3754a988b794405624c7bb, type: 3}
-    indicatorSprite: {fileID: 21300000, guid: 060517748054d485cb316349113d7404, type: 3}
-  - zoneType: 1
-    spinTitle: SILVER SPIN
-    wheelConfig: {fileID: 11400000, guid: 71e2ee12a36df4ddfa228d98028fa54f, type: 2}
-    wheelBaseSprite: {fileID: 21300000, guid: 8fab456507c5a431ab5b16bf97f029df, type: 3}
-    indicatorSprite: {fileID: 21300000, guid: e8521dd99629c4eddb0a2a1b11429019, type: 3}
-  - zoneType: 2
-    spinTitle: GOLDEN SPIN
-    wheelConfig: {fileID: 11400000, guid: 57d295040900a459da6cea6afb5165b5, type: 2}
-    wheelBaseSprite: {fileID: 21300000, guid: 8ae55e18cd66547c3b55ce382bc805e0, type: 3}
-    indicatorSprite: {fileID: 21300000, guid: 0df5a5d31d7134768a22cc9b87c8bddc, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::VertigoWheel.Core.GameInstaller
+  settings: {fileID: 11400000, guid: df03a11836d24fefad4eba82ff48202d, type: 2}
 --- !u!114 &1717672747
 MonoBehaviour:
   m_ObjectHideFlags: 0

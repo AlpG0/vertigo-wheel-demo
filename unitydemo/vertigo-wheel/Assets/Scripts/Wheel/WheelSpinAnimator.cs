@@ -1,6 +1,7 @@
 using System; // Action tipi burda
 using System.Collections; // IEnumerator burda, coroutine icin lazim
 using UnityEngine;
+using VertigoWheel.Utils; // GameConstants burda
 
 
 namespace VertigoWheel.Wheel
@@ -38,8 +39,8 @@ namespace VertigoWheel.Wheel
 
         private IEnumerator SpinRoutine(int segmentIndex, int segmentCount, Action onComplete) // coroutine: zaman icinde calisan metot
         {
-            float segmentAngle = 360f / segmentCount; // her segmentin kapladigi aci
-            float targetAngle = extraFullSpins * 360f + segmentIndex * segmentAngle; // hedef aci: tam turlar + segmentin kendi acisi
+            float segmentAngle = GameConstants.FullRotationDegrees / segmentCount; // her segmentin kapladigi aci
+            float targetAngle = extraFullSpins * GameConstants.FullRotationDegrees + segmentIndex * segmentAngle; // hedef aci: tam turlar + segmentin kendi acisi
 
             transform.localRotation = Quaternion.identity; // her spin basinda aciyi sifirla
             float elapsed = 0f; // gecen sure

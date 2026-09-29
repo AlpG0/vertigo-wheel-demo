@@ -3,6 +3,7 @@ using TMPro; // TMP_Text burda tanimli
 using UnityEngine; // MonoBehaviour, SerializeField burda
 using UnityEngine.UI; // Image tipi burda
 using VertigoWheel.Data; // WheelConfig burda
+using VertigoWheel.Utils; // GameConstants, NumberFormatter, HierarchyLookup burda
 
 namespace VertigoWheel.Wheel
 {
@@ -11,8 +12,6 @@ namespace VertigoWheel.Wheel
     /// </summary>
     public class WheelView : MonoBehaviour, IWheelView // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour; IWheelView'i implement ediyor
     {
-        private const string WheelBaseObjectName = "ui_image_wheel_base"; // segment olmayan tek Image bu, isim literal olarak dagilmasin diye sabit yaptik
-
         [SerializeField] private Image[] segmentImages; // 8 segmentin Image component'leri, array olarak tanımladık. Inspector'da görünmesi için SerializeField ile işaretledik.
         [SerializeField] private TMP_Text[] segmentValueTexts; // her segmentin altindaki "xN" yazilari
         [SerializeField] private TMP_Text maxRewardText; // wheel'in altindaki "Up To xN Rewards" yazisi
@@ -25,7 +24,7 @@ namespace VertigoWheel.Wheel
 
             foreach (Image image in allImages) // her bulunan image icin tek tek bak, foreach asagidaki gibi calisir: once image = allImages[0], sonra image = allImages[1] ... sonuncuya kadar
             { // index ile say yerine listedeki her elemani tek tek aliyor, allImages icindeki her image'i tek tek aliyor ve asagidaki kodu calistiriyor
-                if (image.gameObject.name != WheelBaseObjectName) // wheel_base'in kendisi degilse
+                if (image.gameObject.name != GameConstants.UINames.WheelBaseImage) // wheel_base'in kendisi degilse
                 {
                     filtered.Add(image); // listeye ekle
                 }
@@ -35,12 +34,8 @@ namespace VertigoWheel.Wheel
             segmentValueTexts = GetComponentsInChildren<TMP_Text>(true); // altimda baska text olmadigi icin direkt 8'ini de buluyor, sirasi ikonlarla ayni
 
             // maxRewardText benim (ui_panel_segments'in) altimda degil, bir ust seviyede (ui_panel_wheel_container) duruyor,
-            // o yuzden once parent'a cikip oradan ismiyle arıyoruz.
-            Transform maxRewardTransform = transform.parent.Find("ui_text_max_reward_value");
-            if (maxRewardTransform != null) // henuz sahnede yoksa null gelebilir, hata vermesin diye kontrol ediyoruz
-            {
-                maxRewardText = maxRewardTransform.GetComponent<TMP_Text>();
-            }
+            // o yuzden parent'in altinda ismiyle ariyoruz.
+            maxRewardText = HierarchyLookup.FindByName<TMP_Text>(transform.parent, GameConstants.UINames.MaxRewardText);
         }
 
         public Vector3 GetSegmentWorldPosition(int index) // odul gidis animasyonu icin kazanan segmentin ekrandaki konumu lazim
@@ -61,7 +56,7 @@ namespace VertigoWheel.Wheel
             for (int i = 0; i < segmentImages.Length; i++) // her segment için tek tek
             {
                 segmentImages[i].sprite = wheelConfig.Segments[i].Icon; // o segmentin ikonunu config'ten alıp uyguluyoruz.
-                segmentValueTexts[i].text = "x" + wheelConfig.Segments[i].Amount; // o segmentin miktarini "xN" seklinde yaziyoruz
+                segmentValueTexts[i].text = NumberFormatter.FormatMultiplier(wheelConfig.Segments[i].Amount); // "xN" formati tek yerde
 
                 if (wheelConfig.Segments[i].Amount > maxAmount) // bu segment simdiye kadarkilerden buyukse
                 {
@@ -69,7 +64,7 @@ namespace VertigoWheel.Wheel
                 }
             }
 
-            maxRewardText.text = "Up To x" + maxAmount + " Rewards"; // en yuksek miktari alt yaziya yaziyoruz
+            maxRewardText.text = string.Format(GameConstants.Texts.MaxRewardFormat, NumberFormatter.FormatAmount(maxAmount)); // sablon ve sayi formati tek yerde
         }
     }
 }
