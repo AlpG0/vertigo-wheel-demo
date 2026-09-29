@@ -13,27 +13,19 @@ MonoBehaviour:
   m_Name: WheelConfig_Super
   m_EditorClassIdentifier: Assembly-CSharp::VertigoWheel.Data.WheelConfig
   segments:
-  - rewardType: 1
-    amount: 300
-    icon: {fileID: 21300000, guid: b2a32c209e12f4b05a48da7b604f6baf, type: 3}
-  - rewardType: 1
-    amount: 400
-    icon: {fileID: 21300000, guid: e9ca7dbfc88e34c6194480aa769c8a19, type: 3}
-  - rewardType: 1
-    amount: 400
-    icon: {fileID: 21300000, guid: 3f87434e66353498782b57927a6214c8, type: 3}
-  - rewardType: 1
-    amount: 500
-    icon: {fileID: 21300000, guid: 77e9ecf3fa3ae4aafb7c87b2dba07441, type: 3}
-  - rewardType: 1
-    amount: 600
-    icon: {fileID: 21300000, guid: d4631b28dd96f4b128ccf5be5fb9803d, type: 3}
-  - rewardType: 1
-    amount: 600
-    icon: {fileID: 21300000, guid: 4fb2a344c5ca64f0da6d9c92222cac25, type: 3}
-  - rewardType: 1
-    amount: 350
-    icon: {fileID: 21300000, guid: 3a7e188a250b442589222e36da845455, type: 3}
-  - rewardType: 1
-    amount: 380
-    icon: {fileID: 21300000, guid: 7d81cffa3eb9f49539c93fb87571dce2, type: 3}
+  - reward: {fileID: 11400000, guid: f2aed7f337ef4358abe3c30abddc1be3, type: 2}
+    amount: 1
+  - reward: {fileID: 11400000, guid: ed37a6acc32d4b5782103d51eaf89227, type: 2}
+    amount: 2000
+  - reward: {fileID: 11400000, guid: f660b8d0de57463fbaac5b341e4c7485, type: 2}
+    amount: 1
+  - reward: {fileID: 11400000, guid: 581b24e4638a47dc887d74678f0db533, type: 2}
+    amount: 50
+  - reward: {fileID: 11400000, guid: 93c3a4f51fc84dd69dc5c5f4a48dcd14, type: 2}
+    amount: 1
+  - reward: {fileID: 11400000, guid: c5f8b0de945544198bf54ebb4a17fdc3, type: 2}
+    amount: 1
+  - reward: {fileID: 11400000, guid: 3d1ef8f05e3949209cf6219412f842ac, type: 2}
+    amount: 1
+  - reward: {fileID: 11400000, guid: 0ddfcd2dd89c43dfbde36006079a658b, type: 2}
+    amount: 1

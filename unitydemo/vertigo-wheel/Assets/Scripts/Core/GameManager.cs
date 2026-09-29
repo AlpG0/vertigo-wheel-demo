@@ -1,6 +1,7 @@
 using System.Collections.Generic; // List burda
 using UnityEngine; // MonoBehaviour, SerializeField burda
-using VertigoWheel.Data; // WheelConfig, WheelSegmentData, RewardType, ZonePreset burda
+using VertigoWheel.Data; // WheelConfig, WheelSegmentData, ZonePreset burda
+using VertigoWheel.Rewards; // RewardDefinition, IRunRewards, IWallet, IRewardSink burda
 using VertigoWheel.UI; // ActionButtonsView, HudView burda
 using VertigoWheel.Wheel; // WheelView, IWheelResultPicker, RandomWheelResultPicker burda
 using VertigoWheel.Zone; // ZoneManager, ZoneType burda
@@ -8,11 +9,14 @@ using VertigoWheel.Zone; // ZoneManager, ZoneType burda
 namespace VertigoWheel.Core
 {
     /// <summary>
-    /// Butun sistemleri (wheel, butonlar, hud, zone) birbirine baglayip oyunun akisini yoneten ana sinif.
+    /// Butun sistemleri (wheel, butonlar, hud, zone, oduller) birbirine baglayip oyunun akisini yoneten ana sinif.
     /// </summary>
-    public class GameManager : MonoBehaviour // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour
+    public class GameManager : MonoBehaviour, IRewardSink // odul sonucunu (topla / patla) bu sinif teslim aliyor
     {
-        private const string BombRiskMessageFormat = "Don't lose your {0} rewards!"; // popup acikken oduller henuz kaybedilmedi, GIVE UP'a basilirsa kaybedilecek
+        private const string BombRiskMessageFormat = "Topladığın {0} ödülü kaybetme!"; // popup acikken oduller henuz kaybedilmedi, GIVE UP'a basilirsa kaybedilecek
+        private const int ReviveGoldCost = 25; // altinla devam etmenin bedeli
+        private const int StartingCash = 10000; // oyuncunun baslangic bakiyesi
+        private const int StartingGold = 950;
 
         private enum GameState // oyunun su anki akis durumu, artik dagilmis bool bayraklar yerine tek yerden yonetiliyor
         {
@@ -39,8 +43,11 @@ namespace VertigoWheel.Core
         private IRewardTravelAnimator rewardTravelAnimator; // ayni sebeple arayuz tipinde
 
         private IWheelResultPicker resultPicker; // sonucu secen mantik, arayuz tipinde tutuyoruz
-        private IPlayerRunState runState; // oyuncunun anlik durumu, arayuz tipinde tutuyoruz
+        private IPlayerRunState runState; // oyuncunun hangi zone'da oldugu
         private IZoneManager zoneManager; // su anki zone'un turunu hesaplayan mantik, arayuz tipinde tutuyoruz
+        private IRunRewards runRewards; // bu run'da toplanan, bombayla kaybedilebilecek oduller
+        private IWallet wallet; // kalici nakit/altin bakiyesi
+        private IRewardBank rewardBank; // cikista odullerin aktarildigi yer
         private WheelSegmentData pendingResult; // spin animasyonu bitince uygulanacak sonucu gecici olarak burada tutuyoruz
         private int pendingWinningIndex; // odul gidis animasyonu icin kazanan segmentin index'ini de sakliyoruz
         private GameState currentState = GameState.Idle; // oyun basta bekleme durumunda baslar
@@ -69,17 +76,21 @@ namespace VertigoWheel.Core
             resultPicker = CreateResultPicker(); // hangi picker kullanilacagini bu metoda birakiyoruz, direkt burada new'lemiyoruz
             runState = CreatePlayerRunState(); // ayni sekilde run state'i de fabrika metodundan aliyoruz
             zoneManager = CreateZoneManager(); // ayni sekilde zone manager'i da fabrika metodundan aliyoruz
+            runRewards = new RunRewards();
+            wallet = new Wallet(StartingCash, StartingGold);
+            rewardBank = new PlayerBank(wallet);
 
             actionButtonsView.OnSpinClicked += HandleSpinClicked; // spin event'ine kendi metodumuzu bagliyoruz
             actionButtonsView.OnLeaveClicked += HandleLeaveClicked; // leave event'ine kendi metodumuzu bagliyoruz
-            rewardPopupView.OnGiveUpClicked += HandleBombGiveUp; // GIVE UP'a basilinca kendi metodumuzu bagliyoruz
-            rewardPopupView.OnReviveClicked += HandleBombRevive; // REVIVE'a basilinca kendi metodumuzu bagliyoruz
+            rewardPopupView.OnGiveUpClicked += HandleBombGiveUp;
+            rewardPopupView.OnGoldReviveClicked += HandleGoldRevive;
+            rewardPopupView.OnAdReviveClicked += HandleAdRevive;
         }
 
         protected virtual IWheelResultPicker CreateResultPicker() // hangi IWheelResultPicker kullanilacagini belirler
         {
             return new RandomWheelResultPicker(); // varsayilan olarak rastgele secen picker'i kullaniyoruz
-        } // virtual oldugu icin bir alt sinif (ornegin test amacli) bunu ezip farkli bir picker donduebilir, boylece interface gercekten ise yariyor
+        }
 
         protected virtual IPlayerRunState CreatePlayerRunState() // hangi IPlayerRunState kullanilacagini belirler
         {
@@ -99,18 +110,18 @@ namespace VertigoWheel.Core
 
         private ZoneType GetCurrentZoneType() // su anki zone'un turunu dondurur, tek yerden hesapliyoruz
         {
-            return zoneManager.GetZoneType(runState.CurrentZone); // zoneManager'a soruyoruz, zoneManager zone numarasina gore safe/super/normal donduruyor
+            return zoneManager.GetZoneType(runState.CurrentZone);
         }
 
         private ZonePreset GetCurrentPreset() // su anki zone'a ait veri paketini (config+baslik+sprite) listeden bulur
         {
-            ZoneType zoneType = GetCurrentZoneType(); // once zone turunu ogreniyoruz
+            ZoneType zoneType = GetCurrentZoneType();
 
-            foreach (ZonePreset preset in zonePresets) // listedeki her preset icin tek tek bak
+            foreach (ZonePreset preset in zonePresets)
             {
-                if (preset.ZoneType == zoneType) // aradigimiz zone turu bu mu
+                if (preset.ZoneType == zoneType)
                 {
-                    return preset; // bulduk, dondur
+                    return preset;
                 }
             }
 
@@ -119,99 +130,111 @@ namespace VertigoWheel.Core
 
         private void RefreshViewsForCurrentZone() // su anki zone'a gore tum ekranlari tek yerden gunceller
         {
-            ZonePreset preset = GetCurrentPreset(); // once bu zone'a ait veri paketini al
+            ZonePreset preset = GetCurrentPreset();
 
-            hudView.SetSpinTitle(preset.SpinTitle); // ust basligi guncelle
-            hudView.SetTotal(runState.TotalValue); // toplam odulu guncelle
-            wheelView.ShowConfig(preset.WheelConfig); // wheel'in segmentlerini guncelle
-            wheelThemeView.ApplyTheme(preset.WheelBaseSprite, preset.IndicatorSprite); // wheel'in govde/indicator gorselini guncelle
+            hudView.SetSpinTitle(preset.SpinTitle);
+            hudView.SetTotal(runRewards.CollectedRewards.Count); // gecici: yeni layout'ta (3. adim) bu dairenin yerine sol odul listesi gelecek
+            wheelView.ShowConfig(preset.WheelConfig);
+            wheelThemeView.ApplyTheme(preset.WheelBaseSprite, preset.IndicatorSprite);
         }
 
         private bool CanLeaveCurrentZone() // pdf kurali: sadece safe/super zone'da leave edilebilir
         {
-            ZoneType zoneType = GetCurrentZoneType(); // su anki zone turu ne
+            ZoneType zoneType = GetCurrentZoneType();
             return zoneType == ZoneType.Safe || zoneType == ZoneType.Super;
         }
 
         private void SetState(GameState newState) // oyunun durumunu degistirir, buton etkilesimi buradan turer
         {
-            currentState = newState; // yeni durumu sakla
+            currentState = newState;
 
-            bool isIdle = currentState == GameState.Idle; // sadece Idle'dayken butonlara basilabilir
-            actionButtonsView.SetSpinInteractable(isIdle); // spin sadece Idle'da acik
-            actionButtonsView.SetLeaveInteractable(isIdle && CanLeaveCurrentZone()); // leave hem Idle hem safe/super zone gerektirir
+            bool isIdle = currentState == GameState.Idle;
+            actionButtonsView.SetSpinInteractable(isIdle);
+            actionButtonsView.SetLeaveInteractable(isIdle && CanLeaveCurrentZone());
         }
 
         private void HandleSpinClicked() // spin'e basilinca calisir
         {
-            WheelConfig currentConfig = GetCurrentPreset().WheelConfig; // bu spin icin dogru config hangisi
-            WheelSegmentData result = resultPicker.PickSegment(currentConfig); // o config'ten sonuc sec
-            int winningIndex = currentConfig.Segments.IndexOf(result); // sonucun listedeki index'i, animasyon icin lazim
+            WheelConfig currentConfig = GetCurrentPreset().WheelConfig;
+            WheelSegmentData result = resultPicker.PickSegment(currentConfig);
+            int winningIndex = currentConfig.Segments.IndexOf(result);
 
-            pendingResult = result; // animasyon bitince kullanmak icin sonucu sakla
-            pendingWinningIndex = winningIndex; // odul gidis animasyonu bu index'ten baslayacak, onu da sakla
+            pendingResult = result;
+            pendingWinningIndex = winningIndex;
 
-            SetState(GameState.Spinning); // animasyon bitene kadar hicbir butona basilamasin
+            SetState(GameState.Spinning);
 
-            wheelSpinAnimator.SpinTo(winningIndex, currentConfig.Segments.Count, HandleSpinAnimationComplete); // wheel'i dondur, bitince HandleSpinAnimationComplete'i cagir (parametresiz, o yuzden metot adini direkt verebiliyoruz)
+            wheelSpinAnimator.SpinTo(winningIndex, currentConfig.Segments.Count, HandleSpinAnimationComplete);
         }
 
-        private void HandleSpinAnimationComplete() // animasyon bitince calisir, sonucu pendingResult'tan okur
+        private void HandleSpinAnimationComplete() // animasyon bitince calisir
         {
-            WheelSegmentData result = pendingResult; // sakladigimiz sonucu geri al
+            pendingResult.Reward.Apply(this, pendingResult.Amount); // turu biz sormuyoruz: esyaysa Collect, bombaysa Explode kendiliginden cagrilir
+        }
 
-            if (result.RewardType == RewardType.Bomb) // bombaya carptiysak
+        public void Collect(RewardDefinition reward, int amount) // IRewardSink: bir odul kazanildi
+        {
+            runState.AdvanceZone();
+
+            Vector3 fromPosition = wheelView.GetSegmentWorldPosition(pendingWinningIndex);
+            Vector3 toPosition = hudView.GetTotalWorldPosition();
+            rewardTravelAnimator.Play(reward.Icon, fromPosition, toPosition, HandleRewardTravelComplete); // odul listeye ikon yerine varinca eklensin
+        }
+
+        public void Explode() // IRewardSink: bombaya carpildi
+        {
+            SetState(GameState.PopupOpen);
+
+            string message = string.Format(BombRiskMessageFormat, runRewards.CollectedRewards.Count);
+            bool canAffordGoldRevive = wallet.GetBalance(CurrencyType.Gold) >= ReviveGoldCost;
+            rewardPopupView.Show(message, canAffordGoldRevive);
+        }
+
+        private void HandleRewardTravelComplete() // odul ikonu hedefe ulasinca calisir
+        {
+            runRewards.Add(pendingResult.Reward, pendingResult.Amount);
+            RefreshViewsForCurrentZone();
+            SetState(GameState.Idle);
+        }
+
+        private void HandleBombGiveUp() // GIVE UP: bu run'da toplanan her sey kaybedilir
+        {
+            runRewards.Clear();
+            runState.ResetZone();
+
+            rewardPopupView.Hide();
+            RefreshViewsForCurrentZone();
+            SetState(GameState.Idle);
+        }
+
+        private void HandleGoldRevive() // altinla devam: bedeli cuzdandan dusulur
+        {
+            if (!wallet.TrySpend(CurrencyType.Gold, ReviveGoldCost)) // buton zaten pasif olmali ama yine de guvenlik
             {
-                HandleBombResult(); // bomba akisi artik kendi metodunda
-                return; // butonlari burada acmiyoruz, popup kapaninca acilacak
+                return;
             }
 
-            HandleRewardResult(result); // odul akisi artik kendi metodunda
+            Revive();
         }
 
-        private void HandleBombResult() // bombaya carpinca yapilacak her seyi burada topluyoruz
+        private void HandleAdRevive() // reklamla devam: bedava (reklam sistemi yok, izlenmis sayiyoruz)
         {
-            SetState(GameState.PopupOpen); // popup acik oldugu surece butonlar kapali kalsin
-            rewardPopupView.Show(string.Format(BombRiskMessageFormat, runState.TotalValue)); // henuz hicbir sey sifirlanmadi, oyuncu GIVE UP'a basana kadar oduller duruyor
+            Revive();
         }
 
-        private void HandleBombGiveUp() // GIVE UP'a basilinca calisir, oduller gercekten kaybedilir
+        private void Revive() // hicbir sey kaybedilmez, kalinan yerden devam
         {
-            runState.ResetRun(); // her sey sifirlanir
-
-            rewardPopupView.Hide(); // popup'i gizle
-            RefreshViewsForCurrentZone(); // sifirlanmis run'un ekranini kur
-            SetState(GameState.Idle); // spin tekrar tiklanabilir olsun
+            rewardPopupView.Hide();
+            SetState(GameState.Idle);
         }
 
-        private void HandleBombRevive() // REVIVE (gold veya reklam) basilinca calisir, hicbir sey kaybedilmez
+        private void HandleLeaveClicked() // cikis: toplanan oduller kalici hesaba aktarilir, yeni run baslar
         {
-            rewardPopupView.Hide(); // popup'i gizle
-            SetState(GameState.Idle); // spin tekrar tiklanabilir olsun, zone ve total oldugu gibi kaliyor
-        }
+            runRewards.BankInto(rewardBank);
+            runState.ResetZone();
 
-        private void HandleRewardResult(WheelSegmentData result) // odul kazaninca yapilacak her seyi burada topluyoruz
-        {
-            runState.AddReward(result.Amount); // odulu topluyoruz
-            runState.AdvanceZone(); // bir zone ilerliyoruz
-
-            Vector3 fromPosition = wheelView.GetSegmentWorldPosition(pendingWinningIndex); // ucusun baslayacagi yer, kazanan segmentin ikonu
-            Vector3 toPosition = hudView.GetTotalWorldPosition(); // ucusun bitecegi yer, TOTAL dairesi
-            rewardTravelAnimator.Play(result.Icon, fromPosition, toPosition, HandleRewardTravelComplete); // ikon ucsun, bitince HandleRewardTravelComplete cagrilsin (parametresiz, o yuzden metot adini direkt verebiliyoruz)
-        }
-
-        private void HandleRewardTravelComplete() // odul ikonu TOTAL'e ulasinca calisir
-        {
-            RefreshViewsForCurrentZone(); // yeni zone'un ekranini kur (SetTotal burada da cagrilir, daire pulse atar)
-            SetState(GameState.Idle); // spin tekrar tiklanabilir olsun
-        }
-
-        private void HandleLeaveClicked() // leave'e basilinca calisir (sadece safe/super zone'da tiklanabilir oldugu icin buraya gelmesi zaten guvenli)
-        {
-            runState.EndRun(); // total'i koruyarak zone'u basa al
-
-            RefreshViewsForCurrentZone(); // yeni run'un ekranini kur
-            SetState(GameState.Idle); // yeni run icin butonlari guncelle
+            RefreshViewsForCurrentZone();
+            SetState(GameState.Idle);
         }
     }
 }

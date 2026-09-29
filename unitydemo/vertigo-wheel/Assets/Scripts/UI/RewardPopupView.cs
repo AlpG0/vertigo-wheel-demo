@@ -1,5 +1,4 @@
 using System; // Action tipi burda
-using System.Collections.Generic; // List burda
 using TMPro; // TMP_Text burda
 using UnityEngine;
 using UnityEngine.UI; // Button burda
@@ -11,73 +10,81 @@ namespace VertigoWheel.UI
     /// </summary>
     public class RewardPopupView : MonoBehaviour, IRewardPopupView // IRewardPopupView'i implement ediyor
     {
-        private const string GiveUpButtonName = "ui_button_reward_popup_give_up"; // GIVE UP butonunu digerlerinden ayirt etmek icin isim sabiti
+        private const string MessageTextName = "ui_text_reward_popup_value"; // asil mesaj yazisinin obje ismi
+        private const string GiveUpButtonName = "ui_button_reward_popup_give_up"; // butonlari birbirinden ayirt etmek icin isim sabitleri
+        private const string GoldReviveButtonName = "ui_button_reward_popup_gold_revive";
+        private const string AdReviveButtonName = "ui_button_reward_popup_ad_revive";
 
         [SerializeField] private TMP_Text messageText; // popup icindeki mesaj yazisi
         [SerializeField] private Button giveUpButton; // oduller gercekten kaybedilecekse basilan buton
-        [SerializeField] private Button[] reviveButtons; // gold REVIVE ve reklam REVIVE - ikisi de hicbir sey kaybettirmez
+        [SerializeField] private Button goldReviveButton; // altin harcayarak devam
+        [SerializeField] private Button adReviveButton; // reklam izleyerek devam
 
-        public event Action OnGiveUpClicked; // GIVE UP'a basilinca disariya haber verir
-        public event Action OnReviveClicked; // REVIVE butonlarindan birine basilinca disariya haber verir
+        public event Action OnGiveUpClicked;
+        public event Action OnGoldReviveClicked;
+        public event Action OnAdReviveClicked;
 
         private void OnValidate() // referanslari elle suruklemeyelim diye otomatik bul
         {
-            TMP_Text[] allTexts = GetComponentsInChildren<TMP_Text>(true); // true: inactive objeleri de ara, cunku popup kapali baslıyor
-            foreach (TMP_Text text in allTexts) // artik butonlarin da kendi label'lari oldugu icin isme gore secmemiz lazim
+            TMP_Text[] allTexts = GetComponentsInChildren<TMP_Text>(true); // true: popup kapali basladigi icin inactive de dahil ara
+            foreach (TMP_Text text in allTexts) // butonlarin da kendi label'lari oldugu icin isme gore seciyoruz
             {
-                if (text.gameObject.name == "ui_text_reward_popup_value") // asil mesaj yazisi bu isimde
+                if (text.gameObject.name == MessageTextName)
                 {
                     messageText = text;
                 }
             }
 
-            Button[] allButtons = GetComponentsInChildren<Button>(true); // true: popup kapali basladigi icin inactive de dahil ara
-            List<Button> revives = new List<Button>(); // GIVE UP disindaki butonlari buraya toplayacagiz
-
-            foreach (Button button in allButtons) // her butonu tek tek kontrol et
+            Button[] allButtons = GetComponentsInChildren<Button>(true);
+            foreach (Button button in allButtons) // her butonu ismine gore kendi alanina koy
             {
-                if (button.gameObject.name == GiveUpButtonName) // ismi GIVE UP mi
+                if (button.gameObject.name == GiveUpButtonName)
                 {
                     giveUpButton = button;
                 }
-                else // degilse revive butonlarindan biridir (gold veya reklam)
+                else if (button.gameObject.name == GoldReviveButtonName)
                 {
-                    revives.Add(button);
+                    goldReviveButton = button;
+                }
+                else if (button.gameObject.name == AdReviveButtonName)
+                {
+                    adReviveButton = button;
                 }
             }
-
-            reviveButtons = revives.ToArray(); // List'i tekrar array'e cevirip alana ata
         }
 
         private void Awake() // sahne yuklenince calisir
         {
-            giveUpButton.onClick.AddListener(HandleGiveUpClicked); // GIVE UP'a tiklaninca hangi metot calisacak
-
-            foreach (Button button in reviveButtons) // her iki revive butonunu da ayni metoda bagliyoruz
-            {
-                button.onClick.AddListener(HandleReviveClicked);
-            }
+            giveUpButton.onClick.AddListener(HandleGiveUpClicked);
+            goldReviveButton.onClick.AddListener(HandleGoldReviveClicked);
+            adReviveButton.onClick.AddListener(HandleAdReviveClicked);
         }
 
-        private void HandleGiveUpClicked() // GIVE UP'a tiklaninca calisir
+        private void HandleGiveUpClicked()
         {
-            OnGiveUpClicked?.Invoke(); // dinleyen varsa haber ver
+            OnGiveUpClicked?.Invoke();
         }
 
-        private void HandleReviveClicked() // iki revive butonundan birine tiklaninca calisir
+        private void HandleGoldReviveClicked()
         {
-            OnReviveClicked?.Invoke(); // dinleyen varsa haber ver
+            OnGoldReviveClicked?.Invoke();
         }
 
-        public void Show(string message) // popup'i mesajla birlikte goster
+        private void HandleAdReviveClicked()
         {
-            messageText.text = message; // mesaji guncelle
-            gameObject.SetActive(true); // objeyi aktif yap, goruncur olsun
+            OnAdReviveClicked?.Invoke();
+        }
+
+        public void Show(string message, bool canAffordGoldRevive) // popup'i mesajla birlikte goster
+        {
+            messageText.text = message;
+            goldReviveButton.interactable = canAffordGoldRevive; // altin yetmiyorsa basilamasin, reklamli secenek hep acik
+            gameObject.SetActive(true);
         }
 
         public void Hide() // popup'i gizle
         {
-            gameObject.SetActive(false); // objeyi pasif yap, kaybolsun
+            gameObject.SetActive(false);
         }
     }
 }

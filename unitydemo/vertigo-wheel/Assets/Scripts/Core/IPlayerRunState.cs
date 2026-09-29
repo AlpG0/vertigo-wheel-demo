@@ -6,11 +6,8 @@ namespace VertigoWheel.Core
     public interface IPlayerRunState
     {
         int CurrentZone { get; } // disaridan okunabilsin diye
-        int TotalValue { get; } // disaridan okunabilsin diye
 
-        void AddReward(int amount); // odul kazanildiginda cagrilir
-        void ResetRun(); // bombaya carpinca her sey sifirlanir
         void AdvanceZone(); // bir zone ilerleriz (spin basarili oldugunda)
-        void EndRun(); // leave ile basariyla run'u bitirince cagrilir
+        void ResetZone(); // yeni run icin zone 1'e don (bomba ya da cikis sonrasi), toplanan oduller artik RunRewards'ta
     }
 }
