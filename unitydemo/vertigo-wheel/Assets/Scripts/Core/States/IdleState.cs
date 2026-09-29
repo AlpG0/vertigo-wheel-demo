@@ -38,7 +38,7 @@ namespace VertigoWheel.Core
 
             context.RunRewards.BankInto(context.RewardBank); // toplananlar kalici hesaba
             context.RunState.ResetZone(); // yeni run
-            context.Presenter.Present();
+            context.Presenter.Present(true); // cubuk 1. zone'a geri kaysin
             RefreshButtons(); // Idle'dan cikmiyoruz ama yeni zone'a gore cikis butonu degisti
         }
 

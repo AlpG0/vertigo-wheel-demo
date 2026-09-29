@@ -1,12 +1,13 @@
 using System; // Action tipi burda
 using System.Collections; // IEnumerator burda, coroutine icin lazim
 using UnityEngine;
+using VertigoWheel.Utils; // Easing burda
 using UnityEngine.UI; // Image tipi burda
 
 namespace VertigoWheel.UI
 {
     /// <summary>
-    /// Kazanilan odulun ikonunu wheel'deki segmentten TOTAL dairesine dogru ucurarak tasiyan sinif.
+    /// Kazanilan odulun ikonunu wheel'deki dilimden sol listedeki satirina ucurarak tasiyan sinif.
     /// </summary>
     public class RewardTravelAnimator : MonoBehaviour, IRewardTravelAnimator // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour; IRewardTravelAnimator'i implement ediyor
     {
@@ -35,7 +36,7 @@ namespace VertigoWheel.UI
             {
                 elapsed += Time.deltaTime; // gecen zamani ekle
                 float t = elapsed / duration; // 0 ile 1 arasinda ilerleme
-                float easedT = 1f - Mathf.Pow(1f - t, 3); // ease-out cubic, spin animasyonundaki gibi basta hizli sona dogru yavaslayan egri
+                float easedT = Easing.EaseOutCubic(t); // ease-out cubic, spin animasyonundaki gibi basta hizli sona dogru yavaslayan egri
                 travelIcon.transform.position = Vector3.Lerp(fromPosition, toPosition, easedT); // egriye gore konumu ayarla
                 yield return null; // bir sonraki kareye kadar bekle
             }

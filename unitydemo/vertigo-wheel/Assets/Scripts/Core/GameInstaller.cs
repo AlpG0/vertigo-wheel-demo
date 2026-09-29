@@ -15,6 +15,8 @@ namespace VertigoWheel.Core
         [SerializeField] private GameSettings settings; // zone'lar, baslangic bakiyesi, revive bedeli
 
         private GameController controller;
+        private RunRewardsPresenter runRewardsPresenter;
+        private WalletPresenter walletPresenter;
 
         private void Awake()
         {
@@ -24,6 +26,10 @@ namespace VertigoWheel.Core
                 FindView<IWheelThemeView>(),
                 FindView<IActionButtonsView>(),
                 FindView<IHudView>(),
+                FindView<IZoneBarView>(),
+                FindView<IUpcomingZonesView>(),
+                FindView<IRewardListView>(),
+                FindView<IWalletView>(),
                 FindView<IRewardPopupView>(),
                 FindView<IRewardTravelAnimator>());
 
@@ -32,7 +38,9 @@ namespace VertigoWheel.Core
             IRewardBank rewardBank = new PlayerBank(wallet);
             IZoneService zoneService = new ZoneService(settings.Zones);
             IPlayerRunState runState = new PlayerRunState();
-            ZonePresenter presenter = new ZonePresenter(zoneService, runState, runRewards, views);
+            ZonePresenter presenter = new ZonePresenter(zoneService, runState, views);
+            runRewardsPresenter = new RunRewardsPresenter(runRewards, views.RewardList);
+            walletPresenter = new WalletPresenter(wallet, views.Wallet);
 
             GameContext context = new GameContext(settings, zoneService, runState, runRewards, wallet, rewardBank, CreateResultPicker(), views, presenter);
             controller = new GameController(context);
@@ -48,6 +56,16 @@ namespace VertigoWheel.Core
             if (controller != null)
             {
                 controller.Dispose();
+            }
+
+            if (runRewardsPresenter != null)
+            {
+                runRewardsPresenter.Dispose();
+            }
+
+            if (walletPresenter != null)
+            {
+                walletPresenter.Dispose();
             }
         }
 

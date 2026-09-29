@@ -1,6 +1,7 @@
 using System; // Action tipi burda tanımlı
 using UnityEngine; // MonoBehaviour, SerializeField burda
 using UnityEngine.UI; // Button tipi burda
+using VertigoWheel.Utils; // HierarchyLookup, GameConstants burda
 
 namespace VertigoWheel.UI // UI ile ilgili sınıflar burada olacak.
 {
@@ -17,9 +18,9 @@ namespace VertigoWheel.UI // UI ile ilgili sınıflar burada olacak.
 
         private void OnValidate() // Editor'de otomatik çalışır, referansları elle sürüklemeyelim diye
         {
-            Button[] buttons = GetComponentsInChildren<Button>(); // altındaki tüm butonları bul
-            spinButton = buttons[0]; // ilk bulunan buton spin (hierarchy sırasına göre)
-            leaveButton = buttons[1]; // ikinci bulunan buton leave
+            // butonlar artik farkli panellerde (SPIN wheel'in ortasinda, CIKIS sol panelde), sira yerine isimle buluyoruz
+            spinButton = HierarchyLookup.FindByName<Button>(this, GameConstants.UINames.SpinButton);
+            leaveButton = HierarchyLookup.FindByName<Button>(this, GameConstants.UINames.LeaveButton);
         }
 
         private void Awake() // sahne yüklenince, Start'tan önce çalışır

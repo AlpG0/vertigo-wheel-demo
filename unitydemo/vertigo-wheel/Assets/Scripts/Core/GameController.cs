@@ -35,7 +35,7 @@ namespace VertigoWheel.Core
 
         public void Start()
         {
-            context.Presenter.Present();
+            context.Presenter.Present(false); // oyun basinda animasyonsuz
             machine.Start<IdleState>();
         }
 

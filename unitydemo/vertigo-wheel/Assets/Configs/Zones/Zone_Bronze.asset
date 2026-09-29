@@ -19,3 +19,4 @@ MonoBehaviour:
   wheelConfig: {fileID: 11400000, guid: 5056fce89757e418480d3f3300fdaf58, type: 2}
   wheelBaseSprite: {fileID: 21300000, guid: fab2fd31ff3754a988b794405624c7bb, type: 3}
   indicatorSprite: {fileID: 21300000, guid: 060517748054d485cb316349113d7404, type: 3}
+  themeColor: {r: 1, g: 1, b: 1, a: 1}
