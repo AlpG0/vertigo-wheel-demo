@@ -49,7 +49,7 @@ namespace VertigoWheel.Wheel
             {
                 elapsed += Time.deltaTime; // her karede gecen zamani ekle
                 float t = elapsed / spinDuration; // 0 ile 1 arasinda ilerleme orani (dogrusal, hala sabit hizda ilerliyor)
-                float easedT = 1f - Mathf.Pow(1f - t, 3); // "ease-out cubic": basta hizli, sona dogru yavaslayan bir egri
+                float easedT = Easing.EaseOutCubic(t); // "ease-out cubic": basta hizli, sona dogru yavaslayan bir egri
                 float currentAngle = Mathf.Lerp(0f, targetAngle, easedT); // artik t yerine easedT kullaniyoruz, gercek bir cark gibi yavaslayarak dursun diye
                 transform.localRotation = Quaternion.Euler(0f, 0f, currentAngle); // wheel'i o aciya dondur
                 yield return null; // bir sonraki kareye kadar bekle

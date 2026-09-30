@@ -1,40 +1,27 @@
 using TMPro; // TMP_Text burda tanımlı
 using UnityEngine;
-using VertigoWheel.Utils; // HierarchyLookup, GameConstants, NumberFormatter burda
+using VertigoWheel.Utils; // HierarchyLookup, GameConstants burda
 
 namespace VertigoWheel.UI
 {
     /// <summary>
-    /// Ekrandaki zone ve toplam odul yazilarini gunceleyen sinif.
+    /// Wheel'in altindaki zone basligini ve alt yazisini gunceleyen sinif.
     /// </summary>
     public class HudView : MonoBehaviour, IHudView // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour; IHudView'i implement ediyor
     {
-        [SerializeField] private TMP_Text zoneValueText; // ust baslik yazisi, text mesh pro temel text tipi, bu yüzden TMP_Text
-        [SerializeField] private TMP_Text totalValueText; // TOTAL yazisinin text component'i
-        [SerializeField] private PunchScaleAnimator totalPunchAnimator; // total daire buyuyup kuculerek "pop" efekti versin diye
+        [SerializeField] private TMP_Text titleText; // "GÜMÜŞ ÇEVİRME" gibi buyuk baslik
+        [SerializeField] private TMP_Text subtitleText; // altindaki kucuk aciklama
 
-        private void OnValidate() // referanslari elle surüklemeyelim diye otomatik bul
+        private void OnValidate() // referanslari elle surüklemeyelim diye otomatik bul, isimler GameConstants'ta tek yerde
         {
-            // sahnede birden fazla "Canvas" isimli obje oldugu icin yol ile degil isimle ariyoruz, isimler GameConstants'ta tek yerde
-            zoneValueText = HierarchyLookup.FindByName<TMP_Text>(this, GameConstants.UINames.ZoneTitleText);
-            totalValueText = HierarchyLookup.FindByName<TMP_Text>(this, GameConstants.UINames.TotalValueText);
-            totalPunchAnimator = GetComponentInChildren<PunchScaleAnimator>(true); // altimda tek tane var, direkt bulup atiyoruz
+            titleText = HierarchyLookup.FindByName<TMP_Text>(this, GameConstants.UINames.ZoneTitleText);
+            subtitleText = HierarchyLookup.FindByName<TMP_Text>(this, GameConstants.UINames.ZoneSubtitleText);
         }
 
-        public Vector3 GetTotalWorldPosition() // odul gidis animasyonu icin ucusun bitecegi konum lazim
+        public void SetZoneInfo(string title, string subtitle)
         {
-            return totalPunchAnimator.transform.position;
-        }
-
-        public void SetSpinTitle(string title) // ust basligi gunceller ("GÜMÜŞ ÇEVİRME" gibi)
-        {
-            zoneValueText.text = title;
-        }
-
-        public void SetTotal(int total) // toplam odulu gunceller
-        {
-            totalValueText.text = NumberFormatter.FormatAmount(total); // format kurali tek yerde
-            totalPunchAnimator.Play(); // sayi degisince daire kisa bir pulse yapsin, oduldu belli olsun
+            titleText.text = title;
+            subtitleText.text = subtitle;
         }
     }
 }

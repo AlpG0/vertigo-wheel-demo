@@ -3,7 +3,7 @@ using UnityEngine;
 namespace VertigoWheel.Core
 {
     /// <summary>
-    /// Kazanilan odulun ikonu hedefe ucarken. Ikon varinca odul listeye eklenir ve bir sonraki zone'a gecilir.
+    /// Kazanilan odulun ikonu sol listedeki satirina ucarken. Ikon varinca odul listeye eklenir ve bir sonraki zone'a gecilir.
     /// </summary>
     public class CollectingState : GameState
     {
@@ -15,7 +15,7 @@ namespace VertigoWheel.Core
 
             SpinResult spin = context.CurrentSpin;
             Vector3 from = context.Views.Wheel.GetSegmentWorldPosition(spin.SegmentIndex);
-            Vector3 to = context.Views.Hud.GetTotalWorldPosition();
+            Vector3 to = context.Views.RewardList.PrepareRow(spin.Segment.Reward); // odulun sol listedeki satiri (yoksa olusturulur)
             context.Views.RewardTravel.Play(spin.Segment.Icon, from, to, HandleTravelFinished);
         }
 
@@ -28,7 +28,7 @@ namespace VertigoWheel.Core
 
             SpinResult spin = context.CurrentSpin;
             context.RunRewards.Add(spin.Segment.Reward, spin.Segment.Amount);
-            context.Presenter.Present();
+            context.Presenter.Present(true); // zone cubugu kayarak bir sonraki zone'a gecsin
             machine.ChangeState<IdleState>();
         }
     }

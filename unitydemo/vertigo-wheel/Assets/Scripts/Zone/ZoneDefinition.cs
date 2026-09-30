@@ -16,6 +16,7 @@ namespace VertigoWheel.Zone
         [SerializeField] private WheelConfig wheelConfig; // bu zone'da hangi dilimler var
         [SerializeField] private Sprite wheelBaseSprite; // wheel govdesi
         [SerializeField] private Sprite indicatorSprite; // wheel ustundeki ok
+        [SerializeField] private Color themeColor = Color.white; // zone cubugundaki numara ve yan paneldeki rozet rengi
 
         public string Title { get { return title; } }
         public string Subtitle { get { return subtitle; } }
@@ -24,5 +25,6 @@ namespace VertigoWheel.Zone
         public WheelConfig WheelConfig { get { return wheelConfig; } }
         public Sprite WheelBaseSprite { get { return wheelBaseSprite; } }
         public Sprite IndicatorSprite { get { return indicatorSprite; } }
+        public Color ThemeColor { get { return themeColor; } }
     }
 }

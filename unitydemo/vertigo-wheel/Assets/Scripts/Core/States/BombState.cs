@@ -26,7 +26,7 @@ namespace VertigoWheel.Core
         {
             context.RunRewards.Clear();
             context.RunState.ResetZone();
-            context.Presenter.Present();
+            context.Presenter.Present(true); // cubuk 1. zone'a geri kaysin
             machine.ChangeState<IdleState>();
         }
 

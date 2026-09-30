@@ -16,6 +16,8 @@ namespace VertigoWheel.Zone
             zonesByPriority.Sort(CompareByIntervalDescending);
         }
 
+        public IReadOnlyList<ZoneDefinition> Zones { get { return zonesByPriority; } } // buyuk araliktan kucuge sirali
+
         private static int CompareByIntervalDescending(ZoneDefinition a, ZoneDefinition b)
         {
             return b.Interval.CompareTo(a.Interval);
@@ -41,6 +43,20 @@ namespace VertigoWheel.Zone
 
             cache[zoneNumber] = result;
             return result;
+        }
+
+        public int GetNextZoneNumber(ZoneDefinition zone, int afterZone) // bu zone turu bir sonraki kacinci zone'da gelecek
+        {
+            int limit = afterZone + zone.Interval * 100; // ayni araliga sahip iki tanim olursa sonsuz donmesin diye ust sinir
+            for (int zoneNumber = afterZone + 1; zoneNumber <= limit; zoneNumber++)
+            {
+                if (GetZone(zoneNumber) == zone) // daha buyuk aralikli bir zone ustune binmis olabilir (30 hem 5'in katidir), o yuzden kontrol ediyoruz
+                {
+                    return zoneNumber;
+                }
+            }
+
+            return -1;
         }
     }
 }
