@@ -120,6 +120,68 @@ namespace VertigoWheel.EditorTools
             Debug.Log("Wheel dilimleri yuvalara hizalandi. File > Save ile kaydet.");
         }
 
+        [MenuItem("Tools/Vertigo/Update Bomb Popup")]
+        public static void UpdateBombPopup() // popup butonlarina ikon ekler ve metinleri ekranin geri kalaniyla ayni dile (Turkce) getirir
+        {
+            GameObject rootObject = GameObject.Find("ui_panel_root");
+            if (rootObject == null)
+            {
+                Debug.LogError("ui_panel_root bulunamadi.");
+                return;
+            }
+
+            RectTransform popup = FindDeep(rootObject.transform, "ui_panel_reward_popup");
+
+            SetText(popup, "ui_text_bomb_headline", "EYVAH, BOMBA ELİNDE PATLADI!");
+            SetupPopupButton(popup, GameConstants.UINames.PopupGiveUpButton, "VAZGEÇ", "ui_icon_give_up", "ui_icon_trash.png", new Vector2(26f, 30f));
+            SetupPopupButton(popup, GameConstants.UINames.PopupGoldReviveButton, "25 CANLAN", "ui_icon_gold_revive", "UI_icon_gold.png", new Vector2(34f, 30f));
+            SetupPopupButton(popup, GameConstants.UINames.PopupAdReviveButton, "CANLAN", "ui_icon_ad_revive", "ui_icon_video.png", new Vector2(36f, 27f));
+
+            EditorSceneManager.MarkSceneDirty(rootObject.scene);
+            Debug.Log("Bomba popup'i guncellendi. File > Save ile kaydet.");
+        }
+
+        private static void SetupPopupButton(RectTransform popup, string buttonName, string label, string iconName, string iconFile, Vector2 iconSize)
+        {
+            RectTransform button = FindDeep(popup, buttonName);
+
+            RectTransform icon = FindDeep(button, iconName);
+            if (icon == null) // ilk calistirmada olustur, tekrar calistirilirsa var olani kullan
+            {
+                icon = CreateRect(iconName, button, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, iconSize);
+                AddImage(icon, iconFile, Color.white, Image.Type.Simple, true);
+            }
+
+            Undo.RecordObject(icon, UndoName);
+            icon.anchorMin = new Vector2(0f, 0.5f);
+            icon.anchorMax = new Vector2(0f, 0.5f);
+            icon.pivot = Center;
+            icon.anchoredPosition = new Vector2(30f, 0f);
+            icon.sizeDelta = iconSize;
+            icon.SetAsLastSibling();
+
+            TMP_Text text = button.GetComponentInChildren<TMP_Text>(true);
+            RectTransform textRect = text.rectTransform;
+            Undo.RecordObject(text, UndoName);
+            Undo.RecordObject(textRect, UndoName);
+            text.text = label;
+            text.color = Color.white; // mavi/yesil/gri zeminde beyaz yazi ikonlarla ayni tonda ve daha okunakli
+            text.fontSize = 22f;
+            text.fontStyle = FontStyles.Bold;
+            text.alignment = TextAlignmentOptions.Center;
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = new Vector2(52f, 0f); // ikonun sagindan baslasin
+            textRect.offsetMax = new Vector2(-8f, 0f);
+        }
+
+        private static void SetText(Transform root, string objectName, string value)
+        {
+            TMP_Text text = FindDeep(root, objectName).GetComponent<TMP_Text>();
+            Undo.RecordObject(text, UndoName);
+            text.text = value;
+        }
+
         // Wheel gorselinden (485px) olculen degerler: yuva merkezleri merkezden 143px uzakta, yuva ici ~77px.
         // Gorsel sahnede 450 birim cizildigi icin: yaricap ~133, yuva ~71 birim.
         private const float PocketRadius = 133f;
