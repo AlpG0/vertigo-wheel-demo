@@ -15,9 +15,9 @@ namespace VertigoWheel.UI
         [SerializeField] private RewardRowView rowTemplate; // her satir bundan kopyalanir, kendisi pasif durur
         [SerializeField] private ScrollRect scrollRect; // satirlar sigmazsa kaydirilabilsin
 
-        private readonly Dictionary<RewardDefinition, RewardRowView> rows = new Dictionary<RewardDefinition, RewardRowView>();
+        private readonly Dictionary<RewardDefinition, RewardRowView> rows = new Dictionary<RewardDefinition, RewardRowView>(); // hangi odul turu hangi satirda tutuluyor
 
-        private void OnValidate()
+        private void OnValidate() // inspector'da degisiklik yapildiginda, sahnede gorunmesi icin
         {
             content = HierarchyLookup.FindByName<RectTransform>(this, GameConstants.UINames.RewardListContent);
             rowTemplate = GetComponentInChildren<RewardRowView>(true);
@@ -47,7 +47,7 @@ namespace VertigoWheel.UI
             rows.Clear();
         }
 
-        private RewardRowView GetOrCreateRow(RewardDefinition reward)
+        private RewardRowView GetOrCreateRow(RewardDefinition reward)  // varsa mevcut satiri, yoksa yeni olustur
         {
             RewardRowView row;
             if (rows.TryGetValue(reward, out row))
@@ -56,7 +56,7 @@ namespace VertigoWheel.UI
             }
 
             row = Instantiate(rowTemplate, content);
-            row.name = "ui_reward_row_" + reward.name;
+            row.name = GameConstants.UINames.RewardRowPrefix + reward.name;
             row.gameObject.SetActive(true);
             row.Setup(reward.Icon);
             rows[reward] = row;

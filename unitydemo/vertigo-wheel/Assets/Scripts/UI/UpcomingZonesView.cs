@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using VertigoWheel.Utils;
 
 namespace VertigoWheel.UI
 {
@@ -12,17 +13,17 @@ namespace VertigoWheel.UI
 
         private readonly List<UpcomingZoneBadgeView> badges = new List<UpcomingZoneBadgeView>();
 
-        private void OnValidate()
+        private void OnValidate() // inspector'da degisiklik yapildiginda, sahnede gorunmesi icin
         {
             badgeTemplate = GetComponentInChildren<UpcomingZoneBadgeView>(true);
         }
 
-        public void Show(IReadOnlyList<UpcomingZoneInfo> zones)
+        public void Show(IReadOnlyList<UpcomingZoneInfo> zones) //kac ozel zone varsa o kadar rozet olustur, her rozet zone'un rengini ve sira numarasini gostersin
         {
-            while (badges.Count < zones.Count)
+            while (badges.Count < zones.Count) // yeterli sayida rozet olustur
             {
                 UpcomingZoneBadgeView badge = Instantiate(badgeTemplate, badgeTemplate.transform.parent);
-                badge.name = "ui_upcoming_zone_" + badges.Count;
+                badge.name = GameConstants.UINames.UpcomingZoneBadgePrefix + badges.Count;
                 badge.gameObject.SetActive(true);
                 badges.Add(badge);
             }
