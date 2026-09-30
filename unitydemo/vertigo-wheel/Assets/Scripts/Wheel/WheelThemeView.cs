@@ -20,8 +20,8 @@ namespace VertigoWheel.Wheel
 
         public void ApplyTheme(Sprite baseSprite, Sprite indicatorSprite) // disaridan hangi sprite'lar verilirse onlari uygular
         {
-            wheelBaseImage.sprite = baseSprite;
-            indicatorImage.sprite = indicatorSprite;
+            wheelBaseImage.sprite = baseSprite; // govde gorselini degistir
+            indicatorImage.sprite = indicatorSprite; // indicator gorselini degistir
         }
     }
 }

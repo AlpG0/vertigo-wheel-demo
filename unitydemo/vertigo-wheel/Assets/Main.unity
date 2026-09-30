@@ -4681,10 +4681,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VertigoWheel.UI.RewardPopupView
   messageText: {fileID: 157163163}
-  closeButtons:
-  - {fileID: 411439562}
-  - {fileID: 231994523}
-  - {fileID: 650455977}
+  giveUpButton: {fileID: 411439562}
+  goldReviveButton: {fileID: 231994523}
+  adReviveButton: {fileID: 650455977}
 --- !u!1 &1173042915
 GameObject:
   m_ObjectHideFlags: 0
