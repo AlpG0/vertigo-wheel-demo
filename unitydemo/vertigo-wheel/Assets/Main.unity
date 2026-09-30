@@ -2673,7 +2673,7 @@ GameObject:
   m_Component:
   - component: {fileID: 554727108}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: ui_canvas_reward_popup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3576,7 +3576,7 @@ GameObject:
   - component: {fileID: 710309307}
   - component: {fileID: 710309306}
   m_Layer: 5
-  m_Name: ui_reward_row_template
+  m_Name: ui_panel_reward_row_template
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5026,7 +5026,7 @@ GameObject:
   - component: {fileID: 129944075}
   - component: {fileID: 623982559}
   m_Layer: 5
-  m_Name: GIVE UP
+  m_Name: ui_text_give_up_label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6535,7 +6535,7 @@ GameObject:
   - component: {fileID: 1423590569}
   - component: {fileID: 1423590568}
   m_Layer: 5
-  m_Name: ui_upcoming_zone_template
+  m_Name: ui_panel_upcoming_zone_template
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -281,7 +281,7 @@ namespace VertigoWheel.EditorTools
             scroll.movementType = ScrollRect.MovementType.Clamped;
             scroll.scrollSensitivity = 20f;
 
-            RectTransform row = CreateRect("ui_reward_row_template", content, new Vector2(0f, 1f), Vector2.one, new Vector2(0.5f, 1f), Vector2.zero, new Vector2(0f, 58f));
+            RectTransform row = CreateRect("ui_panel_reward_row_template", content, new Vector2(0f, 1f), Vector2.one, new Vector2(0.5f, 1f), Vector2.zero, new Vector2(0f, 58f));
             LayoutElement rowLayout = row.gameObject.AddComponent<LayoutElement>();
             rowLayout.minHeight = 58f;
             rowLayout.preferredHeight = 58f;
@@ -309,7 +309,7 @@ namespace VertigoWheel.EditorTools
             layout.childForceExpandWidth = true;
             layout.childForceExpandHeight = false;
 
-            RectTransform badge = CreateRect("ui_upcoming_zone_template", upcoming, new Vector2(0f, 1f), Vector2.one, new Vector2(0.5f, 1f), Vector2.zero, new Vector2(0f, 100f));
+            RectTransform badge = CreateRect("ui_panel_upcoming_zone_template", upcoming, new Vector2(0f, 1f), Vector2.one, new Vector2(0.5f, 1f), Vector2.zero, new Vector2(0f, 100f));
             LayoutElement badgeLayout = badge.gameObject.AddComponent<LayoutElement>();
             badgeLayout.minHeight = 100f;
             badgeLayout.preferredHeight = 100f;

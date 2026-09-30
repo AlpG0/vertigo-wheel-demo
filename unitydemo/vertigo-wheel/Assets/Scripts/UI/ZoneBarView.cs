@@ -19,17 +19,17 @@ namespace VertigoWheel.UI
         [SerializeField] private float slideDuration = 0.35f; // kayma animasyonu suresi
         [SerializeField] private float passedZoneAlpha = 0.35f; // gecilmis zone'lar soluk gorunsun
 
-        private readonly List<TMP_Text> cells = new List<TMP_Text>();
-        private Coroutine slideRoutine;
+        private readonly List<TMP_Text> cells = new List<TMP_Text>(); // numara hucresinin kopyalari
+        private Coroutine slideRoutine; // kayma animasyonu coroutine'i, birden fazla animasyon baslamasini engellemek icin tutuluyor
 
-        private void OnValidate()
+        private void OnValidate() // inspector'da degisiklik yapildiginda, sahnede gorunmesi icin
         {
             content = HierarchyLookup.FindByName<RectTransform>(this, GameConstants.UINames.ZoneBarContent);
             cellTemplate = HierarchyLookup.FindByName<TMP_Text>(this, GameConstants.UINames.ZoneBarCellTemplate);
             currentFramePunch = GetComponentInChildren<PunchScaleAnimator>(true);
         }
 
-        public void ShowZone(int currentZone, IReadOnlyList<Color> zoneColors, bool animate)
+        public void ShowZone(int currentZone, IReadOnlyList<Color> zoneColors, bool animate) // mevcut zone'u ve zone renklerini goster, kaydirarak animasyon yap
         {
             EnsureCells(zoneColors.Count);
 
@@ -69,7 +69,7 @@ namespace VertigoWheel.UI
             {
                 int zoneNumber = cells.Count + 1;
                 TMP_Text cell = Instantiate(cellTemplate, content);
-                cell.name = "ui_text_zone_cell_" + zoneNumber;
+                cell.name = GameConstants.UINames.ZoneBarCellPrefix + zoneNumber;
                 cell.text = NumberFormatter.FormatAmount(zoneNumber);
                 cell.rectTransform.anchoredPosition = new Vector2((zoneNumber - 1) * cellWidth, 0f);
                 cell.gameObject.SetActive(true);
@@ -77,7 +77,7 @@ namespace VertigoWheel.UI
             }
         }
 
-        private IEnumerator SlideTo(float targetX)
+        private IEnumerator SlideTo(float targetX) // mevcut zone kutusunu kaydirarak yeni zone'a getir
         {
             float startX = content.anchoredPosition.x;
             float elapsed = 0f;
