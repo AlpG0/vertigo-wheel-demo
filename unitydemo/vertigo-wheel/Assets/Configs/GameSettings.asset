@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df83c098450f4e59aa84941314b8a4eb, type: 3}
+  m_Name: GameSettings
+  m_EditorClassIdentifier: Assembly-CSharp::VertigoWheel.Core.GameSettings
+  zones:
+  - {fileID: 11400000, guid: a1574e7c0ecb434d966ca5012c48dbd8, type: 2}
+  - {fileID: 11400000, guid: 70709c2f46f346c4909196bb8b7d66ea, type: 2}
+  - {fileID: 11400000, guid: d886b8855ead4fdb87c2eb9e7741819b, type: 2}
+  startingCash: 10000
+  startingGold: 950
+  reviveGoldCost: 25
+  debugForcedSegmentIndex: -1

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 965e5f841b034735869ed314d82af3d0, type: 3}
+  m_Name: Zone_Bronze
+  m_EditorClassIdentifier: Assembly-CSharp::VertigoWheel.Zone.ZoneDefinition
+  title: "BRONZ \u00c7EV\u0130RME"
+  subtitle: "BOMBA R\u0130SK\u0130 VAR - D\u0130KKATL\u0130 \u00c7EV\u0130R"
+  interval: 1
+  canLeave: 0
+  wheelConfig: {fileID: 11400000, guid: 5056fce89757e418480d3f3300fdaf58, type: 2}
+  wheelBaseSprite: {fileID: 21300000, guid: fab2fd31ff3754a988b794405624c7bb, type: 3}
+  indicatorSprite: {fileID: 21300000, guid: 060517748054d485cb316349113d7404, type: 3}

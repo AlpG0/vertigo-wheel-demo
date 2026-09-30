@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
+using VertigoWheel.Utils; // HierarchyLookup, GameConstants burda
 
 namespace VertigoWheel.Wheel
 {
     /// <summary>
     /// Wheel'in govde ve indicator gorselini kendisine verilen sprite'larla degistiren sinif.
-    /// Hangi zone'da hangi sprite kullanilacagini bilmez, bu karar artik GameManager'daki ZonePreset'te.
+    /// Hangi zone'da hangi sprite kullanilacagini bilmez, bu karar ZoneDefinition asset'lerinde.
     /// </summary>
     public class WheelThemeView : MonoBehaviour, IWheelThemeView // sahnedeki bir objeye eklenecek, o yüzden MonoBehaviour; IWheelThemeView'i implement ediyor
     {
@@ -14,8 +15,8 @@ namespace VertigoWheel.Wheel
 
         private void OnValidate() // referanslari elle suruklemeyelim diye otomatik bul
         {
-            wheelBaseImage = transform.Find("ui_panel_segments/ui_image_wheel_base").GetComponent<Image>(); // hiyerarsideki belirli bir yolu bulur
-            indicatorImage = transform.Find("ui_image_wheel_indicator").GetComponent<Image>(); // direkt cocugu bulur
+            wheelBaseImage = HierarchyLookup.FindByName<Image>(this, GameConstants.UINames.WheelBaseImage); // yol yerine isim: obje baska bir parent'a tasinsa da bulur
+            indicatorImage = HierarchyLookup.FindByName<Image>(this, GameConstants.UINames.WheelIndicatorImage);
         }
 
         public void ApplyTheme(Sprite baseSprite, Sprite indicatorSprite) // disaridan hangi sprite'lar verilirse onlari uygular

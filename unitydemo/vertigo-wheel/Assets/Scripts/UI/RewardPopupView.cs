@@ -2,6 +2,7 @@ using System; // Action tipi burda
 using TMPro; // TMP_Text burda
 using UnityEngine;
 using UnityEngine.UI; // Button burda
+using VertigoWheel.Utils; // GameConstants, HierarchyLookup burda
 
 namespace VertigoWheel.UI
 {
@@ -10,11 +11,6 @@ namespace VertigoWheel.UI
     /// </summary>
     public class RewardPopupView : MonoBehaviour, IRewardPopupView // IRewardPopupView'i implement ediyor
     {
-        private const string MessageTextName = "ui_text_reward_popup_value"; // asil mesaj yazisinin obje ismi
-        private const string GiveUpButtonName = "ui_button_reward_popup_give_up"; // butonlari birbirinden ayirt etmek icin isim sabitleri
-        private const string GoldReviveButtonName = "ui_button_reward_popup_gold_revive";
-        private const string AdReviveButtonName = "ui_button_reward_popup_ad_revive";
-
         [SerializeField] private TMP_Text messageText; // popup icindeki mesaj yazisi
         [SerializeField] private Button giveUpButton; // oduller gercekten kaybedilecekse basilan buton
         [SerializeField] private Button goldReviveButton; // altin harcayarak devam
@@ -24,33 +20,12 @@ namespace VertigoWheel.UI
         public event Action OnGoldReviveClicked;
         public event Action OnAdReviveClicked;
 
-        private void OnValidate() // referanslari elle suruklemeyelim diye otomatik bul
+        private void OnValidate() // referanslari elle suruklemeyelim diye otomatik bul, isimler GameConstants'ta tek yerde
         {
-            TMP_Text[] allTexts = GetComponentsInChildren<TMP_Text>(true); // true: popup kapali basladigi icin inactive de dahil ara
-            foreach (TMP_Text text in allTexts) // butonlarin da kendi label'lari oldugu icin isme gore seciyoruz
-            {
-                if (text.gameObject.name == MessageTextName)
-                {
-                    messageText = text;
-                }
-            }
-
-            Button[] allButtons = GetComponentsInChildren<Button>(true);
-            foreach (Button button in allButtons) // her butonu ismine gore kendi alanina koy
-            {
-                if (button.gameObject.name == GiveUpButtonName)
-                {
-                    giveUpButton = button;
-                }
-                else if (button.gameObject.name == GoldReviveButtonName)
-                {
-                    goldReviveButton = button;
-                }
-                else if (button.gameObject.name == AdReviveButtonName)
-                {
-                    adReviveButton = button;
-                }
-            }
+            messageText = HierarchyLookup.FindByName<TMP_Text>(this, GameConstants.UINames.PopupMessageText);
+            giveUpButton = HierarchyLookup.FindByName<Button>(this, GameConstants.UINames.PopupGiveUpButton);
+            goldReviveButton = HierarchyLookup.FindByName<Button>(this, GameConstants.UINames.PopupGoldReviveButton);
+            adReviveButton = HierarchyLookup.FindByName<Button>(this, GameConstants.UINames.PopupAdReviveButton);
         }
 
         private void Awake() // sahne yuklenince calisir
